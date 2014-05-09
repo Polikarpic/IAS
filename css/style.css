@@ -1,0 +1,457 @@
+/* =Reset 
+-------------------------------------------------------------- */
+
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+	border: 0;	
+	font-size: 100%;
+	margin: 0;
+	padding: 0;
+	vertical-align: baseline;
+}
+
+/* =General 
+-------------------------------------------------------------- */
+
+body {
+	font: 14px Arial, sans-serif;
+	background: url('./../images/hoffman.png');
+}
+
+.container {
+	width: 1050px;	
+	margin: 0 auto;
+ 
+}
+
+.clear {
+	clear: both;
+}
+
+a {
+	color: #2793b5;
+	text-decoration: none;
+}
+
+a:hover {
+color: #1E90FF;
+}
+
+
+
+/* Блоки
+-------------------------------------------------------------- */
+
+#edge {
+	background: #FFFAFA;
+	padding: 5px;
+	border: 1px solid #ccc;
+	margin-bottom: 10px;
+	word-wrap: break-word;
+}
+
+#edge_head {
+	background: #e9cc92;
+    padding: 5px;
+	border: 1px solid #ccc;
+	margin-bottom: 10px;
+	font: 16px Arial Black, sans-serif;
+	color: #7a7674;
+	word-wrap: break-word;
+	overflow: hidden;
+}
+
+#edge.button{
+padding-bottom: 40px;
+}
+
+#edge.head_r {
+float: right;
+display: inline-block;
+}
+
+#edge.head_l {
+float: left;
+background: transparent;
+border: 0px;
+padding-left: 0px;
+display: inline-block;
+}
+
+#edge.no_margin_bottom {
+margin-bottom: -5px;
+}
+
+#edge.error {
+background: #FFC0CB;
+}
+
+#edge.info {
+background: #ADD8E6;
+}
+
+
+#edge.deadlines {
+background: #E9967A;
+}
+
+/* =Page 
+-------------------------------------------------------------- */
+
+#page {
+	position: relative;
+	
+	background: #f9f9f9 url(./../images/page-bg.png) repeat;
+	border: 1px solid #FFF;
+	border-width: 1px 0;
+	box-shadow: 0 2px 2px RGBA(0,0,0,0.1);
+	margin: 100px 0 18px 0;
+	padding: 30px 40px 30px 150px;
+}
+
+#page h1 {
+	color: #7a7674;
+	font: 16px Arial Black, sans-serif;
+	background: #FDF5E6;
+	border: 1px solid #ccc;
+	min-height: 10px;
+	padding: 2px;
+	margin-bottom: 5px;
+	
+}
+
+#page-decoration {
+	position: absolute;
+	top: -60px;
+	left: 0;
+	width: 100%;
+	height: 20px;
+	
+/*	background: RGBA(0,0,0,0.01); */
+}
+
+
+
+
+
+/* =Main Menu 
+-------------------------------------------------------------- */
+
+#main-menu {
+	position: absolute;
+	top: 45px;
+	left: -51px;
+	width: 164px;
+}
+
+#main-menu li {
+	position: relative;
+	width: 174px;
+	height: 41px;
+	background: url(./../images/sprites/tab-inactive.png) no-repeat;
+	display: block;
+	font-weight: bold;
+	overflow: hidden;
+	font-size: 12px;
+}
+
+#main-menu li a {
+	color: #d4d4d4;
+	display: block;
+	padding: 16px 0 15px 60px;
+	text-decoration: none;
+	text-shadow: 0 0 2px rgba(0,0,0,0.02);
+}
+
+#main-menu li.current-menu-item {
+	background: url(./../images/sprites/tab-active.png) no-repeat;
+}
+
+#main-menu li.current-menu-item a {
+	color: #505259;
+	text-shadow: none;
+}
+
+/* =Main Menu  : Icons 
+-------------------------------------------------------------- */
+
+#main-menu li em {
+	position: absolute;
+	top: 14px;
+	left: 18px;
+	width: 16px;
+	height: 16px;
+	background-repeat: no-repeat;
+}
+
+
+#main-menu li.page-home-php em {
+	background-image: url(./../images/icons/home.png);
+}
+
+#main-menu li.page-profile-php em {
+	background-image: url(./../images/icons/profile.png);
+}
+
+#main-menu li.page-message-php em {
+	background-image: url(./../images/icons/message.png);
+}
+
+#main-menu li.page-list-php em {
+	background-image: url(./../images/icons/list.png);
+}
+
+#main-menu li.page-document-php em {
+	background-image: url(./../images/icons/document.png);
+}
+
+#main-menu li.page-settings-php em {
+	background-image: url(./../images/icons/settings.png);
+}
+
+/* =Stiker
+-------------------------------------------------------------- */
+#stiker {
+	position: absolute;
+	top: 320px;
+	left: -35px;
+	width: 170px;
+	font-style: oblique;
+	Box-shadow: 0px 0px 0px 1px #ccc;
+
+}
+
+#stiker_wrap {
+	width: 140px;
+	margin-top: 10px;
+	margin-left: 10px;
+	margin-bottom: 10px;
+	word-wrap: break-word;
+	overflow: hidden;
+	font-size: 12px;
+}
+
+#h_wrap {
+
+width: 170px;
+text-align: center;
+}
+
+
+/* =Content 
+-------------------------------------------------------------- */
+
+#content {
+	color: #5f5e5b;
+	
+	margin-left: 0px;
+	min-height: 600px;	
+	/* font: 18px Verdana, sans-serif; */
+ }
+
+#page-shadow {
+	position: absolute;
+	bottom: -25px;
+	left: 0;
+	width: 100%;
+	height: 24px;
+		
+	background: url(./../images/page-shadow.png) no-repeat center center;
+}
+
+
+#page-top {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 16px;
+	
+	background: url(./../images/page-top.png) repeat-x;
+}
+
+#page-bottom {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 10px;
+	
+	background: url(./../images/page-bottom.png) repeat-x;
+}
+
+/* Выравнивание input */
+
+label,
+input[type=text],input[type=password],select  {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+input[type=text], input[type=password],select { 
+    border: 1px dotted #ccc; 
+    outline:0; 
+    height:25px; 
+    width: 360px; 
+	margin-bottom: 3px;
+  } 
+  
+select  {
+margin-left: -4px;
+width: 362px;
+}  
+
+
+
+#right {
+float: right;
+display: inline-block;
+}
+
+ 
+  
+textarea {
+  border: 1px dotted #ccc; 
+  outline:0; 
+  resize: none;
+  width: 810px;
+  height: 100px;
+
+}
+
+label {
+    width: 455px;
+	white-space: nowrap;
+}
+
+
+/* button */
+#submit
+{		
+    background-color: #ADD8E6;
+    border: double #ccc;
+	Box-shadow: 0px 0px 0px 0px #ccc;
+    float: right;
+    padding: 0;
+    /* width: 120px; */
+	padding: 5px;
+    cursor: pointer;
+    font: bold 14px Arial, Helvetica;
+    color: #000000;
+}
+
+#submit:focus
+{		
+	outline:none;
+}	
+
+#submit:hover
+{		
+	color: #000000;
+	outline:none;
+	background-color: #FDF5E6;
+}	
+
+#submit:active
+{		
+    outline: none;
+	background-color: #FFFFFF;
+}
+
+
+
+
+/* =Footer 
+-------------------------------------------------------------- */
+
+#footer {
+	color: #6c6a67;
+	margin: 18px 0 100px 0;
+	padding: 0 8px;
+}
+
+.copyright {
+float: right;
+
+}
+
+
