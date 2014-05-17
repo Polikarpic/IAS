@@ -4,8 +4,8 @@
 	include_once("php/db.php");
 	session_start(); 
 
-	#доступ к странице только для преподавателя
-	if ($_SESSION["statusId"] != 1){ header("Location: ./../home.php"); exit();}
+	#доступ
+	if ($_SESSION["statusId"] == 0){ $_SESSION["um"] = 'e0'; header("Location: home"); exit();}
 
 	#передан ли номер работы
 	if (isset($_GET["z"]))
@@ -25,6 +25,9 @@
 	$query = mysql_query("SELECT * FROM tblWork WHERE intWorkId='".$appl["intWorkId"]."' LIMIT 1");
 	$work = mysql_fetch_array($query);
 	
+	#получаем количество поданых заявок на выполнение этой работы
+	$query = mysql_query("SELECT COUNT(*) as max FROM tblList_of_applications WHERE intWorkId='".$appl["intWorkId"]."' and boolStatus='0'");
+	$count_appl = mysql_fetch_array($query);	
 	
 	#получаем информацию о работе
 	$check = mysql_query("SELECT * FROM tblWork WHERE txtStudentId LIKE '%".$appl["intStudentId"]."%' LIMIT 1");
@@ -39,6 +42,7 @@
 <div id="edge">
 <p>Тема: <a href="topic.php?z=<?php echo $appl["intWorkId"]; ?>"><b><?php echo $work["txtTopic"]; ?></b></a> </p>
 <p>Студент: <i><a href="profile.php?z=<?php echo $appl["intStudentId"]; ?>"><?php echo $student; ?></a></i> </p>
+<p>Подано заявок на выполнение работы: <b><?php if (!empty($count_appl["max"])) echo $count_appl["max"]; else echo 0; ?></b> </p>
 </div>
 
 <?php

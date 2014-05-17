@@ -12,60 +12,18 @@
 	<link rel="stylesheet" type="text/css" href="css/tooltip.css" />';
 	include_once("templ/block_header.php"); 
 	
-	include_once("php/error.php");
-	include_once("php/info.php");
-	
 	#получаем информацию о текущем пользователе
 	$query = mysql_query("SELECT txtMail,txtPhone FROM tblUsers WHERE intUserId='".$_SESSION["userId"]."' LIMIT 1");
     $ep = mysql_fetch_array($query);
 	
-	#получаем настройки оповещений пользователя
-	$query = mysql_query("SELECT * FROM tblSettings WHERE intUserId='".$_SESSION["userId"]."'");
-	$setting = mysql_fetch_array($query);
-	$setting = explode(" ",$setting["txtSettings"]);
-	
+	#настройки
+	$settings = get_user_settings();
 	
 	#подсказка для изменения пароля
 	$hint_pass = "* Убедитесь, что <b>не включена</b> кнопка CAPS-lock<br/>* Пароль должен быть <b>не менее 6 символов</b> в длину<br/>* <b>'qwerty'</b> и <b>'QWErTY'</b> - разные пароли";
 
-	#ошибки
-	if ($_GET["change_pass"] == "fail" && $_GET["reason"] == "n_confirm")
-	{
-		$error[] = "Неверный пароль подтверждения";
-	}
-	if ($_GET["change_pass"] == "fail" && $_GET["reason"] == "n_pass")
-	{
-		$error[] = "Неверный пароль";
-	}	
-	if ($_GET["change_mail"] == "fail" && $_GET["reason"] == "incorrect")
-	{
-		$error[] = "Неверный формат почтового ящика";
-	}	
-	if ($_GET["change_phone"] == "fail" && $_GET["reason"] == "incorrect")
-	{
-		$error[] = "Неверный формат телефонного номера";
-	}	
-	if ($_GET["change_pass"] == "ok")
-	{
-		$info[] = "Пароль был успешно изменён";
-	} 
-	if ($_GET["change_mail"] == "ok")
-	{
-		$info[] = "Адрес электронной почты был успешно изменён";
-	} 
-	if ($_GET["change_phone"] == "ok")
-	{
-		$info[] = "Телефон был успешно изменён";
-	} 
-	if ($_GET["change_notification_mail"] == "ok")
-	{
-		$info[] = "Настройки оповещений были успешно изменены";
-	} 
-	
-	
-	unset($_GET);
-	error_msg($error);	
-	info_msg($info);
+	#сообщения для пользователя
+	um();
 	
 ?>
 <div id="edge" class="button">
@@ -83,6 +41,7 @@
 	<h1>Адрес Вашей электронной почты</h1>
     <form action="php/change_mail.php" method="post">
 		<label>E-mail: </label><input type="text" name="mail" placeholder="E-mail" maxlength="30" value="<?php if (isset($ep)) echo $ep["txtMail"]; ?>" /><br />
+		<input type="checkbox" <?php if ($settings[3] == 1) echo "checked='checked'"; ?> name="set4" /><label>Отображать в профиле </label>
 		<input id="submit" type="submit" name="send" value="Сохранить" />
 	</form>		
 </div>	
@@ -91,7 +50,8 @@
 <div id="edge" class="button">
 	<h1>Номер Вашего телефона</h1>
     <form action="php/change_phone.php" method="post">
-		<label>Телефон: </label><input type="text" name="phone" required="" maxlength="30" value="<?php if (isset($ep)) echo $ep["txtPhone"]; ?>" placeholder="Телефон"/><br />
+		<label>Телефон: </label><input type="text" name="phone" maxlength="30" value="<?php if (isset($ep)) echo $ep["txtPhone"]; ?>" placeholder="Телефон"/><br />
+		<input type="checkbox" <?php if ($settings[4] == 1) echo "checked='checked'"; ?> name="set5" /><label>Отображать в профиле </label>
 		<input id="submit" type="submit" name="send" value="Сохранить" />
 	</form>		
 </div>
@@ -100,9 +60,9 @@
 <div id="edge" class="button">
 	<h1>Рассылка оповещений на электронную почту</h1>
 	<form action="php/change_notification_mail.php" method="post">
-		<input type="checkbox" name="set1" <?php if ($setting["0"] == 1) echo "checked='checked'"; ?>> <label>Новое объявление или новость</label><br />
-		<input type="checkbox" name="set2" <?php if ($setting["1"] == 1) echo "checked='checked'"; ?>> <label>Новое сообщение</label><br />
-		<input type="checkbox" name="set3" <?php if ($setting["2"] == 1) echo "checked='checked'"; ?>> <label>Новое оповещение на сайте</label><br />
+		<input type="checkbox" name="set1" <?php if ($settings[0] == 1) echo "checked='checked'"; ?>> <label>Новое объявление или новость</label><br />
+		<input type="checkbox" name="set2" <?php if ($settings[1] == 1) echo "checked='checked'"; ?>> <label>Новое сообщение</label><br />
+		<input type="checkbox" name="set3" <?php if ($settings[2] == 1) echo "checked='checked'"; ?>> <label>Новое оповещение на сайте</label><br />
 		<input id="submit" type="submit" name="send" value="Сохранить" />
 	</form>	
 

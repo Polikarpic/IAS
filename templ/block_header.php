@@ -31,7 +31,7 @@ session_start();
 		<li class="menu-item <?php if (!empty($current_menu2)) echo $current_menu2; ?> page-profile-php"><em></em><a href="profile">Профиль</a></li>
 		<li class="menu-item <?php if (!empty($current_menu3)) echo $current_menu3; ?> page-message-php"><em></em><a href="message">Сообщения</a></li>
 		<li class="menu-item <?php if (!empty($current_menu4)) echo $current_menu4; ?> page-list-php"><em></em><a href="list">Список работ</a></li>
-		<li class="menu-item <?php if (!empty($current_menu5)) echo $current_menu5; ?> page-document-php"><em></em><a href="training_aids">Документы</a></li>
+		<li class="menu-item <?php if (!empty($current_menu5)) echo $current_menu5; ?> page-document-php"><em></em><a href="documents">Документы</a></li>
 		<li class="menu-item <?php if (!empty($current_menu6)) echo $current_menu6; ?> page-settings-php"><em></em><a href="settings">Настройки</a></li>
 	</ul>
 </div>	
@@ -41,7 +41,7 @@ session_start();
 	</div>
 </div> 
 
-		<div id="page-decoration"><a href="home"><img src="images/logo.png" /></a></div>
+		<div id="page-decoration"><a href="home"><img src="images/logo_beta.png" /></a></div>
 		
 		<div id="site-info">
 			<div class="text"></div>

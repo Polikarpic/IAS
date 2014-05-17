@@ -18,15 +18,19 @@ session_start();
 		if ($new_password === $confirm_password){ #совпадает ли пароль подтверждения
 			#сохраняем пароль пользователя
 			mysql_query("UPDATE tblUsers SET txtPass='".md5(md5('c2tsE}DkAJK!]W%'.$new_password.'QdmrA}SM(Z4n?\/'))."' WHERE intUserId='".$_SESSION["userId"]."'");
-			header("Location: ./../settings.php?change_pass=ok");
+			
+			$_SESSION["um"] = 'i17';
+			header("Location: ./../settings");
 		} 
 		else 
 		{
-			header("Location: ./../settings?change_pass=fail&reason=n_confirm"); exit();
+			$_SESSION["um"] = 'e7';
+			header("Location: ./../settings"); exit();
 		}	
 	}
 	else 
 	{
-		header("Location: ./../settings?change_pass=fail&reason=n_pass"); exit();
+		$_SESSION["um"] = 'e8';
+		header("Location: ./../settings"); exit();
 	}
 ?>

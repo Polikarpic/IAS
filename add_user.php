@@ -3,7 +3,7 @@
 
 	session_start();  
 	
-	if ($_SESSION["statusId"] == 0) header("Location: ./home");
+	if ($_SESSION["statusId"] == 0){ $_SESSION["um"] = 'e0'; header("Location: home"); exit();}
 
 	$title = "Добавить пользователя";
 	$current_menu1 = "current-menu-item current_page_item";
@@ -60,8 +60,16 @@
 				}
 				?>
 				</select><br />				
-				<label>Курс: </label><input type="text" name="course" maxlength="1" placeholder="Курс" value="1" onkeyup="return digC(this);" onchange="return digC(this);" /><br />
-				<label>Группа: </label><input type="text" name="group" maxlength="6" placeholder="Группа" value="000001" onkeyup="return digC(this);" onchange="return digC(this);" /><br />			
+				<label>Курс:</label>
+				<select name="course">
+					<option value="1">1</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+					<option value="5">5</option>
+					<option value="6">6</option>
+				</select><br />
+				<label>Группа: </label><input type="text" name="group" maxlength="6" placeholder="Группа" /><br />			
 			</div>
 			
 				<input id="submit" type="submit" value="Добавить" />

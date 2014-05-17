@@ -5,7 +5,7 @@ session_start();
 	$row_limit = 10; //число работ на страницу
 	
 	# получаем номер страницы 
-	if (intval($_GET['page4']) > 0) $pages = safe_var(intval($_GET['page4']));
+	if (intval($_GET['page6']) > 0) $pages = safe_var(intval($_GET['page6']));
 	else $pages = 1;
 	
 	# получаем максимальное число записей на страницу
@@ -15,15 +15,17 @@ session_start();
 	# если число страниц меньше нуля
 	if ($pages < 0) $pages = 1;
 	if ($pages > $max_pages) $pages = $max_pages;
-	$_GET["page4"] = $pages;	
+	$_GET["page6"] = $pages;	
 	
 	#получаем номер сообщения для вывода
 	$row_start = ($pages - 1) * $row_limit;	
 
 	#получаем информацию о работе
-	$query = mysql_query("SELECT * 
+	$query = mysql_query("SELECT  *, dd.txtDirectionName as txtDirectionName2, d.txtDirectionName as txtDirectionName1
 	FROM tblWork w
-	LEFT JOIN tblDirection d ON d.intDirectionId = w.intDirectionId
+	LEFT JOIN tblDirection d ON (d.intDirectionId = w.intDirectionId)
+	LEFT JOIN tblDirection dd ON (dd.intDirectionId = w.intDirectionId2)
+	LEFT JOIN tblChair ch ON ch.intChairId = w.intChairId
 	WHERE w.boolType='1' and (w.txtStudentId is null or w.intStudentsPerformingWork < w.txtNumber_of_persons) ORDER BY w.intWorkId DESC LIMIT ".$row_start.", ".$row_limit."");	
 
 ?>
@@ -34,6 +36,7 @@ session_start();
 					<th >Курс</th>
 					<th >Направление</th>
 					<th >Количество человек</th>
+					<th >Кафедра преподавателя</th>
 					<th >Руководитель</th>
 				</tr>	
 				<?php
@@ -45,8 +48,12 @@ session_start();
 					echo '<tr>';
 					echo '<td><a href="topic?z='.$data["intWorkId"].'">'.$data["txtTopic"].'</a></td>';
 					echo '<td>'.$data["txtCourse"].'</td>';  
-					echo '<td>'.$data["txtDirectionName"].'</td>';  
+					
+					if ($data["txtDirectionName2"] != '' && $data["txtDirectionName1"] != $data["txtDirectionName2"]) echo '<td>'.$data["txtDirectionName1"].', '.$data["txtDirectionName2"].'</td>';  
+					else echo '<td>'.$data["txtDirectionName1"].'</td>'; 
+					
 					echo '<td>'.$data["txtNumber_of_persons"].'</td>';    
+					echo '<td>'.$data["txtAbbreviation"].'</td>';
 					echo '<td><a href="profile?z='.$data['intTeacherId'].'">'.$teacher.'</a></td>';    
 					echo '</tr>';
 				}
@@ -57,6 +64,7 @@ session_start();
 					echo '<td></td>';  
 					echo '<td></td>';  
 					echo '<td></td>';    
+					echo '<td></td>';  
 					echo '<td></td>';  
 					echo '</tr>';				
 				}
@@ -74,7 +82,7 @@ echo 'Страница: ';
 		}
 		else
 		{
-			echo '<a href="'.$_SERVER["PHP_SELF"].'?page4='.$p.'&page1='.$_GET['page1'].'&page2='.$_GET['page2'].'&page3='.$_GET['page3'].'">'.$p.'</a> ';
+			echo '<a href="./../../list?page1='.$_GET['page1'].'&page2='.$_GET['page2'].'&page3='.$_GET['page3'].'&page4='.$_GET['page4'].'&page5='.$_GET['page5'].'&page6='.$p.'&page7='.$_GET['page7'].'&page8='.$_GET['page8'].'&c1='.$_GET['c1'].'&c2='.$_GET['c2'].'&c3=2&c4='.$_GET['c4'].'">'.$p.'</a> ';
 		}
 	}
 }

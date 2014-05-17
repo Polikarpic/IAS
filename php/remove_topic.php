@@ -2,10 +2,9 @@
 include_once("db.php");
 session_start();  
 	
-	#доступ только у преподавателя
-	if ($_SESSION["statusId"] != 1){ header("Location: ./home.php"); exit(); }
-	
-	
+	#доступ
+	if ($_SESSION["statusId"] == 0){ $_SESSION["um"] = 'e0'; header("Location: ./home"); exit(); }
+		
 	#удаляем тему
 	mysql_query("DELETE FROM tblWork WHERE intWorkId='".safe_var($_GET["z"])."' LIMIT 1");
   	
@@ -24,7 +23,7 @@ session_start();
 	#удаляем документы
 	mysql_query("DELETE FROM tblReview WHERE intWorkId='".safe_var($_GET["z"])."'");
 	
-	#возврат на главную страницу
-	header("Location: ./../home?remove_topic=ok");
+	$_SESSION["um"] = 'i4';
+	header("Location: ./../home");
 	
 ?>

@@ -2,12 +2,14 @@
  
 
 	include_once("db.php");
-	include_once("php/info.php");
 	session_start();
 	
 	$title = "Новости";
 	$current_menu1 = "current-menu-item current_page_item";
 	include("templ/block_header.php"); 
+	
+	#сообщения для пользователя
+	um();
 	
 	$row_limit = 10; //число новостей на страницу
 	
@@ -27,22 +29,22 @@
 	#получаем номер новости для вывода
 	$row_start = ($pages - 1) * $row_limit;	
 	
+	
 	#получаем список новостей
-	$query = mysql_query("SELECT * FROM tblNews ORDER BY intNewsId DESC LIMIT ".$row_start.", ".$row_limit."");	
-	
-	
-	#информация
-	if ($_GET["add_news"] == "ok")
-	{
-		$info[] = "Новость была успешно добавлена";
-	} 
-	if ($_GET["remowe_news"] == "ok")
-	{
-		$info[] = "Новость была успешно удалена";
-	} 
-	
-	info_msg($info);
-
+	#для студента фильтрация по направлению, курсу
+	if ($_SESSION["statusId"] == 0)
+		$query = mysql_query("SELECT txtText, datDate, intNewsId FROM tblNews WHERE 
+		(intGroup_of_readers = '".$_SESSION["statusId"]."' or intGroup_of_readers is null) 
+		and (intDirectionId = '".$_SESSION["directionId"]."' or intDirectionId  is null)
+		and (intCourse ='".$_SESSION["courseId"]."' or intCourse  is null)
+		ORDER BY intNewsId DESC LIMIT ".$row_start.", ".$row_limit."");	
+	#другие группы пользователей
+	#фильтрация по кафедре
+	else
+		$query = mysql_query("SELECT txtText, datDate, intNewsId FROM tblNews WHERE 
+		(intGroup_of_readers = '".$_SESSION["statusId"]."' or intGroup_of_readers  is null) 
+		and (intChairId = '".$_SESSION["chairId"]."' or intChairId  is null) or (intSenderId='".$_SESSION["userId"]."')
+		ORDER BY intNewsId DESC LIMIT ".$row_start.", ".$row_limit."");	
 	 
 ?>
 <div id="edge">
@@ -59,7 +61,7 @@
 			if ($_SESSION["statusId"] != 0) $remove_button = ' <image src="./images/remove.png" title="Удалить новость" style="cursor: pointer;" onclick="location.href=\'php/remove_news.php?z='.$data["intNewsId"].'\'" />';
 			else $remove_button = "";
 			echo '<tr>';
-			echo '<td>'.$data["datDate"].$remove_button.'</td>';
+			echo '<td>'.strftime('%d %B %G года',strtotime($data["datDate"])).$remove_button.'</td>';
 			echo '<td>'.$data["txtText"].'</td>';
 			echo '</tr>';
 		}

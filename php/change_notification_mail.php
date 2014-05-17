@@ -17,21 +17,13 @@ session_start();
 	if (!empty($set3)) $set3 = 1;
 	else $set3 = 0;
 	
+	set_user_settings(1, $set1);
+	set_user_settings(2, $set2);
+	set_user_settings(3, $set3);
 	
-	$set = $set1." ".$set2." ".$set3;
-
 	
-	$query = mysql_query("SELECT * FROM tblSettings WHERE intUserId='".$_SESSION["userId"]."'");
-	if (mysql_num_rows($query) != 0) 
-	{
-		mysql_query("UPDATE tblSettings SET txtSettings='".$set."' WHERE intUserId='".$_SESSION["userId"]."'");
-	}
-	else
-	{
-		mysql_query("INSERT INTO `tblSettings` (`intUserId`,`txtSettings`) VALUES ('".$_SESSION["userId"]."','".$set."')");	
-	}
-	
-	header("Location: ./../settings?change_notification_mail=ok"); exit();
+	$_SESSION["um"] = 'i27';
+	header("Location: ./../settings"); exit();
 
 	
 	

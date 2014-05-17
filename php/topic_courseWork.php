@@ -5,24 +5,40 @@
 include_once("db.php");
 
 	#получаем крайние сроки сдачи отчёта и работы
-	$query_deadlines = mysql_query("SELECT * FROM tblDeadlines ORDER BY intDeadlinesId DESC LIMIT 1");
+	$query_deadlines = mysql_query("SELECT * FROM tblDeadlines WHERE intDeadlinesId='".$topic["intDeadlinesId"]."' LIMIT 1");
 	$deadlines = mysql_fetch_array($query_deadlines);
 
 	#получаем информацию о курсовых работах(документы)
 	$query = mysql_query("SELECT * FROM tblReview WHERE intWorkId='".$topic["intWorkId"]."' and (boolType='1' or boolType='4') ORDER BY intReviewId DESC");	
 		
+	if (!$topic["boolType"])#курсовая работа
+	{
+		$deadlines_r = $deadlines["dateRentingReport"];
+		$deadlines_w = $deadlines["dateRentingWork"];
+	}
+	else #ВКР
+	{
+		$deadlines_r = $deadlines["dateRentingReport1"];
+		$deadlines_w = $deadlines["dateRentingWork1"];			
+	}
 	
-		   
+	
+	#считаем разницу во времени
+	$rtime = strtotime($deadlines_r) - time();
+	$wtime = strtotime($deadlines_w) - time();
+	if (($rtime < 604800 && $rtime > 0) || ($wtime < 604800 && $wtime > 0)) $div_class = 'deadlines_f';
+	else $div_class = '';
+
 ?>
 
 	<div id="edge">
 	<h1>Отчёт и курсовая работа</h1>
-	<div id="edge" class="deadlines">Крайний срок сдачи отчёта: <b><?php if (isset($deadlines["dateRentingReport"])) echo $deadlines["dateRentingReport"]; ?></b><br />
-	Крайний срок сдачи работы: <b><?php if (isset($deadlines["dateRentingWork"])) echo $deadlines["dateRentingWork"]; ?></b></div>
+	<div id="edge" class="<?php echo $div_class; ?>">Крайний срок сдачи отчёта: <b><?php echo strftime('%d %B %G года',strtotime($deadlines_r)); ?></b><br />
+	Крайний срок сдачи работы: <b><?php echo strftime('%d %B %G года',strtotime($deadlines_w)); ?></b></div>
 
 	<table class="tftable">
 		<tr>
-			<th >Дата</th>	
+			<th >Дата загрузки</th>	
 			<th >Тип документа</th>
 			<th >Загрузил</th>
 			<th >Название документа</th>	
@@ -34,7 +50,7 @@ include_once("db.php");
 					else $type_file = 'Отчёт';
 					
 					echo '<tr>';
-					echo '<td>'.$data["datDate"].'</td>';
+					echo '<td>'.strftime('%d %B %G года',strtotime($data["datDate"])).'</td>';
 					echo '<td>'.$type_file.'</td>'; 
 					echo '<td><a href="profile?z='.$data["intSenderId"].'">'.getFullName($data["intSenderId"]).'</a></td>';
 					echo '<td><a href="'.$data["txtLink"].'">'.$data["txtName"].'</td>';       
@@ -52,7 +68,7 @@ include_once("db.php");
 				?>
 			</table>	
 <?php 
-if (mysql_num_rows($query_student) != 0)
+if (mysql_num_rows($query_student) != 0 && $topic["intWorkStatus"] == 0)
 {
 	
 	echo '<div id="edge" class="button">';

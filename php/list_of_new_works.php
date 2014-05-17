@@ -11,17 +11,16 @@ echo '<script type="text/javascript" src="js/jQuery_load.js"></script>';
 			<h1>Новые темы 
 				<div id="right">
 					<select id="filter_nw" onchange="filter_func();">
-						<option value="1">Подходящие</option>
+						<option value="1">Подходящие <?php if ($_SESSION["statusId"] == 0) echo 'по курсу и направлению'; else echo 'по кафедре'; ?></option>
 						<option value="2">Все</option>
 					</select>  
 				</div>
 			</h1>
-			
-	
+				
 			
 			<div id="new_works">
 			<?php include_once("work_filter/new_work_filter.php"); ?>
 			</div>
 		<input id="submit" type="button" onclick="location.href='list.php'" value="Все темы" />	
-		<?php if ($_SESSION["statusId"] == 1) echo '<input id="submit" type="button" onclick="location.href=\'\add_topic\'" value="Добавить тему" />'; ?>
+		<?php if ($_SESSION["statusId"] == 1  || $_SESSION["statusId"] == 2) echo '<input id="submit" type="button" onclick="location.href=\'\add_topic\'" value="Добавить тему" />'; ?>
 	</div>	

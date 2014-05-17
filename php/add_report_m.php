@@ -5,7 +5,7 @@ include_once("db.php");
 session_start();  
 
 #доступ только у методиста
-if ($_SESSION["statusId"] != 2){ header("Location: ./../home"); exit(); }
+if ($_SESSION["statusId"] != 2){ $_SESSION["um"] = 'e0'; header("Location: ./../home"); exit(); }
 
 # настройки цветов
 $textColour = array( 0, 0, 0 );
@@ -19,9 +19,10 @@ $tableRowFillColour = array( 255, 255, 255 ); //ячейки фон
 $workType = safe_var($_POST["workType"]);
 $course = safe_var($_POST["course"]);
 $typeDoc = safe_var($_POST["type_doc"]);
+$direction = safe_var($_POST["direction"]);
 
 #получаем информацию о работах
-$query = mysql_query("SELECT txtStudentId, txtTopic, intTeacherId, intWorkId FROM tblWork WHERE txtStudentId is not null and boolType='".safe_var($workType)."' and txtCourse='".$course."'");
+$query = mysql_query("SELECT txtStudentId, txtTopic, intTeacherId, intWorkId FROM tblWork WHERE txtStudentId is not null and boolType='".safe_var($workType)."' and txtCourse='".$course."' and intDirectionId ='".$direction."'");
 	
 #получаем крайние сроки сдачи отчёта и работы
 $query_deadlines = mysql_query("SELECT * FROM tblDeadlines ORDER BY intDeadlinesId DESC LIMIT 1");
@@ -29,8 +30,6 @@ $deadlines = mysql_fetch_array($query_deadlines);
 
 if ($workType == 0) $workType = 'курсовых работ';
 else $workType = 'выпускных кваллификационных работ';
-
-
 				
 $i = 1;
 while($data = mysql_fetch_array($query))
@@ -44,6 +43,14 @@ while($data = mysql_fetch_array($query))
 			#получаем информацию о студенте
 			$query_u = mysql_query("SELECT * FROM tblUsers WHERE intUserId='".$students[$j]."'");
 			$student = mysql_fetch_array($query_u);	
+			
+			#получаем дату сдачи отчёта и работы
+			$query_rep =  mysql_query("SELECT datDate FROM tblReview WHERE boolType='1' ORDER BY intReviewId DESC LIMIT 1");
+			$report_date = mysql_fetch_array($query_rep);	
+			
+			#получаем дату сдачи отчёта и работы
+			$query_w =  mysql_query("SELECT datDate FROM tblReview WHERE boolType='4' ORDER BY intReviewId DESC LIMIT 1");
+			$work_date = mysql_fetch_array($query_w);				
 			
 			#оценки
 			$query_m = mysql_query("SELECT * FROM tblMark WHERE intWorkId='".$data['intWorkId']."' and intStudentId='".$students[$j]."' LIMIT 1");
@@ -75,9 +82,9 @@ while($data = mysql_fetch_array($query))
 			$cell .= '<td>'.$student["txtSurname"]." ".$student["txtName"]." ".$student["txtSecondName"].'</td>';
 			$cell .= '<td>'.$student["txtGroup"].'</td>';
 			$cell .= '<td>'.$teacher.'</td>';
-			$cell .= '<td>'.$deadlines["dateRentingReport"].'</td>';
+			$cell .= '<td>'.date('Y-m-d',strtotime($report_date["datDate"])).'</td>';
 			$cell .= '<td>'.$mark['txtTeacherMark'].'</td>';
-			$cell .= '<td>'.$deadlines["dateRentingWork"].'</td>';
+			$cell .= '<td>'.date('Y-m-d',strtotime($work_date["datDate"])).'</td>';
 			$cell .= '<td>'.$mark['txtTeacherMark'].'</td>';
 			$cell .= '<td>'.$mark['txtReviewerMark'].'</td>';
 			$cell .= '<td>'.$mark['txtFinalMark'].'</td>';

@@ -1,0 +1,19 @@
+<?php
+include_once("db.php");
+session_start();  
+	
+	#доступ
+	if ($_SESSION["statusId"] == 0){ $_SESSION["um"] = 'e0'; header("Location: ./home"); exit(); }
+	
+	$query = mysql_query("SELECT * FROM tblMaterials WHERE intMaterialsId='".safe_var($_GET["z"])."' LIMIT 1");
+	$data = mysql_fetch_array($query);	
+		
+	#удаляем документ
+	mysql_query("DELETE FROM tblMaterials WHERE intMaterialsId='".safe_var($_GET["z"])."'");
+  	
+	#удаляем документ с сервера
+	unlink("./../".$data["txtLink"]);
+		
+	$_SESSION["um"] = 'i32';
+	header("Location: ./../documents");	
+?>

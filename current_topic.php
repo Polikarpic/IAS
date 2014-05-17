@@ -2,12 +2,10 @@
  
 
 	include_once("php/db.php");
-	include_once("php/error.php");
-	include_once("php/info.php");
 	session_start(); 
 
 	#проверяем получен ли номер работы
-	if (!isset($_GET["z"])) { header("location: ./home.php?current_topic=fail&reason=not_work"); exit(); }
+	if (!isset($_GET["z"])) {$_SESSION["um"] = 'e16'; header("location: ./home"); exit(); }
 	
 	#получаем информацию о работе
 	$query = mysql_query("SELECT *
@@ -16,10 +14,10 @@
 	WHERE w.intWorkId='".safe_var($_GET["z"])."' LIMIT 1");
 	$topic = mysql_fetch_array($query);
 		
-	if (empty($topic) || mysql_num_rows($query) == 0){ header("location: ./home.php?ct=fail&reason=not_work"); exit(); }
+	if (empty($topic) || mysql_num_rows($query) == 0){ header("location: ./home?ct=fail&reason=not_work"); exit(); }
 	
 	#проверяем не свободна ли работа
-	if (is_null($topic["txtStudentId"])){ header("location: ./topic.php?z=".$_GET["z"].""); exit(); }	
+	if (is_null($topic["txtStudentId"])){ header("location: ./topic?z=".$_GET["z"].""); exit(); }	
 	
 	#получаем информацию о подробном описании работы
 	$query = mysql_query("SELECT txtName, txtLink FROM tblReview WHERE intReviewId='".$topic["intAdditionalComment"]."' LIMIT 1");
@@ -37,7 +35,10 @@
 	if (!$topic["boolType"]) $typeWork = "Курсовая работа";
     else $typeWork = "Выпускная кваллификационная работа";
 
-	$title = $typeWork." студента ".$student;
+	if ($topic["intWorkStatus"]) $archive = '[Архив] ';
+	else $archive = '';
+	
+	$title = $archive.$typeWork." \"".$topic["txtTopic"]."\"";
 	$current_menu4 = "current-menu-item current_page_item";
 	include_once("templ/block_header.php"); 
 	
@@ -60,10 +61,6 @@
 		$info[] = "Документ успешно загружен";
 	} 
 	
-	info_msg($info);
-	error_msg($error);
-	
-	
 	function mark($intStudentId,$topic){
 	#оценки
 	$query = mysql_query("SELECT * FROM tblMark WHERE intWorkId='".safe_var($_GET["z"])."' and intStudentId='".$intStudentId."' LIMIT 1");
@@ -83,6 +80,10 @@
 	echo '</div>';	
 	}
 	
+	#сообщения для пользователя
+	um();
+	
+	
 		 
 ?>
 <div id="edge">
@@ -92,13 +93,13 @@
 <?php if (!empty($material)) echo '<p>Подробное описание:<br /><a href="'.$material["txtLink"].'">'.$material["txtName"].'</a></p>'; ?>
 <p>Курс: <i><?php echo $topic["txtCourse"]; ?></i></p>
 <p>Направление: <i><?php echo $topic["txtDirectionName"]; ?></i></p>
-<p>Руководитель: <b><a href="./profile.php?z=<?php echo $topic['intTeacherId']; ?>"><?php echo $teacher; ?></a></b> </p>
+<p>Руководитель: <b><a href="./profile?z=<?php echo $topic['intTeacherId']; ?>"><?php echo $teacher; ?></a></b> </p>
 <?php
 if ($topic["txtNumber_of_persons"] == 1)
 { 
 	$student = getFullName(intval($topic['txtStudentId']));
-	echo '<p>Выполняет: <b><a href="./profile.php?z='.intval($topic['txtStudentId']).'">'.$student.'</a></b></p>';
-    mark(intval($topic['txtStudentId']),$topic);
+	echo '<p>Выполняет: <b><a href="./profile?z='.intval($topic['txtStudentId']).'">'.$student.'</a></b></p>';
+    if ($topic["intWorkStatus"] == 0) mark(intval($topic['txtStudentId']),$topic);
 }
 else
 {
@@ -108,19 +109,21 @@ else
 	for ($i = 1; $i <= $max; $i++)
 	{
 		$student = getFullName($students[$i]);
-		echo '<b><a href="./profile.php?z='.$students[$i].'">'.$student.'</a></b><br />';
-		mark($students[$i],$topic);
+		echo '<b><a href="./profile?z='.$students[$i].'">'.$student.'</a></b><br />';
+		if ($topic["intWorkStatus"] == 0) mark($students[$i],$topic);
 	}
 }
 ?>
 <p>Рецензент: <b><?php if (isset($reviewers["intTeacherId"])) echo '<a href="profile?z='.$reviewers["intTeacherId"].'">'.getFullName($reviewers['intTeacherId']).'</a>'; else echo 'не назначен'; ?></b></p>
 
-<?php  if ($topic["intTeacherId"] == $_SESSION["userId"])  include_once("php/teacher/assign_reviewer.php"); ?>
+<?php  if ((($topic["intTeacherId"] == $_SESSION["userId"]) || ($_SESSION["statusId"] == 2 && $_SESSION["chairId"] == $topic["intChairId"])) && $topic["intWorkStatus"] == 0)  include_once("php/teacher/assign_reviewer.php"); ?>
 
 </div>
 
-<?php //if ($_SESSION["userId"] == $topic['intTeacherId']) echo '<div id="edge" class="button"><input id="submit" type="button" onclick="location.href=\'\close_topic?z='.$topic["intWorkId"].'\'" value="Закрыть работу" /><input id="submit" type="button" onclick="location.href=\'\edit_topic?z='.$topic["intWorkId"].'?a=y\'" value="Редактировать тему" /></div>';
-//if (mysql_num_rows($query_student) != 0) echo '<div id="edge" class="button"><input id="submit" type="button" onclick="location.href=\'refuse_work\'" value="Отказаться от выполнения работы" /></div>';
+<?php 
+if (($_SESSION["userId"] == $topic['intTeacherId'] || ($_SESSION["statusId"] == 2 && $_SESSION["chairId"] == $topic["intChairId"])) && $topic["intWorkStatus"] == 1) echo '<div id="edge" class="button"><input id="submit" type="button" onclick="if (confirm(\'Вы действительно хотите открыть работу?\'))location.href=\'php/open_work?z='.$topic["intWorkId"].'?a=y\'" value="Открыть работу" /><input id="submit" type="button" onclick="location.href=\'php/copy_topic?z='.$topic["intWorkId"].'?a=y\'" value="Копировать тему" /></div>';
+if (($_SESSION["userId"] == $topic['intTeacherId'] || ($_SESSION["statusId"] == 2 && $_SESSION["chairId"] == $topic["intChairId"])) && $topic["intWorkStatus"] == 0) echo '<div id="edge" class="button"><input id="submit" type="button" onclick="if (confirm(\'Вы действительно хотите закрыть работу?\'))location.href=\'php/close_work?z='.$topic["intWorkId"].'?a=y\'" value="Закрыть работу" /></div>';
+if (mysql_num_rows($query_student) != 0 && $topic["intWorkStatus"] == 0) echo '<div id="edge" class="button"><input id="submit" type="button" onclick="if (confirm(\'Вы действительно хотите отказаться от выполнения работы?\'))location.href=\'php/refuse_work.php?z='.$topic["intWorkId"].'\'" value="Отказаться от работы" /></div>';
 
 
  include_once("php/topic_courseWork.php");

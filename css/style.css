@@ -170,7 +170,11 @@ background: #ADD8E6;
 }
 
 
-#edge.deadlines {
+#edge.deadlines_g {
+background: #C1FFC1;
+}
+
+#edge.deadlines_f {
 background: #E9967A;
 }
 
@@ -317,6 +321,65 @@ text-align: center;
 }
 
 
+
+/* Support */
+#s_types {
+width: 190px;
+height: 100%;
+word-wrap: break-word;
+overflow: hidden;
+padding-top: 5px;
+padding-left: 20px;
+padding-bottom: 5px;
+padding-right: 5px;
+background: rgba(255, 255, 240, 1);
+border-radius: 10px;
+border-radius: 10px;  /* свойство для тех кто его поддерживает */
+-moz-border-radius: 10px;  /* для firefox */
+-webkit-border-radius: 10px;  /* для Safari и Chrome */
+margin-bottom: 10px;
+}
+
+#s_feed {
+position: absolute;
+width: 600px;
+height: 1000px;
+word-wrap: break-word;
+overflow: hidden;
+padding-top: 5px;
+padding-left: 20px;
+padding-bottom: 5px;
+padding-right: 5px;
+background: rgba(255, 255, 240, 1);
+border-radius: 10px;
+border-radius: 10px;  /* свойство для тех кто его поддерживает */
+-moz-border-radius: 10px;  /* для firefox */
+-webkit-border-radius: 10px;  /* для Safari и Chrome */
+left: 385px;
+top: 115px;
+
+}
+
+#s_type li, ul {
+list-style-type: square;
+padding-bottom: 5px;
+}
+
+#sh_types {
+background: rgba(233, 204, 146, 1);
+text-align: center;
+padding: 5px;
+width: 170px;
+border-radius: 10px;
+border-radius: 10px;  /* свойство для тех кто его поддерживает */
+-moz-border-radius: 10px;  /* для firefox */
+-webkit-border-radius: 10px;  /* для Safari и Chrome */
+margin-bottom: 5px;
+}
+
+
+
+
 /* =Content 
 -------------------------------------------------------------- */
 
@@ -412,7 +475,6 @@ label {
 	Box-shadow: 0px 0px 0px 0px #ccc;
     float: right;
     padding: 0;
-    /* width: 120px; */
 	padding: 5px;
     cursor: pointer;
     font: bold 14px Arial, Helvetica;
@@ -436,6 +498,14 @@ label {
     outline: none;
 	background-color: #FFFFFF;
 }
+
+#submit.left_b 
+{
+	float: left;
+	margin: 0px;
+	width: 282px;
+}
+
 
 
 

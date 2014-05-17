@@ -6,17 +6,21 @@ session_start();
 	if ($_SESSION["statusId"] == 0)
 	{
 		#получаем список последних 5 добавленных работ
-		$query = mysql_query("SELECT *
+		$query = mysql_query("SELECT *, dd.txtDirectionName as txtDirectionName2, d.txtDirectionName as txtDirectionName1
 		FROM tblWork w
-		LEFT JOIN tblDirection d ON d.intDirectionId = w.intDirectionId
-		WHERE w.intDirectionId='".$_SESSION["directionId"]."' and w.txtCourse='".$_SESSION["courseId"]."' and (w.txtStudentId is null or w.intStudentsPerformingWork < w.txtNumber_of_persons) ORDER BY w.intWorkId DESC LIMIT 5");	
+		LEFT JOIN tblDirection d ON (d.intDirectionId = w.intDirectionId)
+		LEFT JOIN tblDirection dd ON (dd.intDirectionId = w.intDirectionId2)
+		LEFT JOIN tblChair ch ON ch.intChairId = w.intChairId
+		WHERE (w.intDirectionId='".$_SESSION["directionId"]."' or w.intDirectionId2='".$_SESSION["directionId"]."') and w.txtCourse='".$_SESSION["courseId"]."' and (w.txtStudentId is null or w.intStudentsPerformingWork < w.txtNumber_of_persons) ORDER BY w.intWorkId DESC LIMIT 5");	
 	}
 	else
 	{
 		#получаем список последних 5 добавленных работ
-		$query = mysql_query("SELECT *
+		$query = mysql_query("SELECT *, dd.txtDirectionName as txtDirectionName2, d.txtDirectionName as txtDirectionName1
 		FROM tblWork w
-		LEFT JOIN tblDirection d ON d.intDirectionId = w.intDirectionId
+		LEFT JOIN tblDirection d ON (d.intDirectionId = w.intDirectionId)
+		LEFT JOIN tblDirection dd ON (dd.intDirectionId = w.intDirectionId2)
+		LEFT JOIN tblChair ch ON ch.intChairId = w.intChairId
 		WHERE w.intChairId='".$_SESSION["chairId"]."' and (w.txtStudentId is null or w.intStudentsPerformingWork < w.txtNumber_of_persons) ORDER BY w.intWorkId DESC LIMIT 5");	
 	}
 ?>
@@ -27,6 +31,7 @@ session_start();
 					<th >Курс</th>
 					<th >Направление</th>
 					<th >Количество человек</th>
+					<th >Кафедра преподавателя</th>
 					<th >Руководитель</th>
 				</tr>	
 				<?php
@@ -37,8 +42,12 @@ session_start();
 					echo '<tr>';
 					echo '<td><a href="./../topic?z='.$data["intWorkId"].'">'.$data["txtTopic"].'</a></td>';
 					echo '<td>'.$data["txtCourse"].'</td>';  
-					echo '<td>'.$data["txtDirectionName"].'</td>';  
+					
+					if ($data["txtDirectionName2"] != '' && $data["txtDirectionName1"] != $data["txtDirectionName2"]) echo '<td>'.$data["txtDirectionName1"].', '.$data["txtDirectionName2"].'</td>';  
+					else echo '<td>'.$data["txtDirectionName1"].'</td>';  
+					
 					echo '<td>'.$data["txtNumber_of_persons"].'</td>';    
+					echo '<td>'.$data["txtAbbreviation"].'</td>';
 					echo '<td><a href="profile?z='.$data['intTeacherId'].'">'.$teacher.'</a></td>';    
 					echo '</tr>';
 				}
@@ -49,6 +58,7 @@ session_start();
 					echo '<td></td>';  
 					echo '<td></td>';  
 					echo '<td></td>';    
+					echo '<td></td>';  
 					echo '<td></td>';  
 					echo '</tr>';				
 				}

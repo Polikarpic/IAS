@@ -8,7 +8,7 @@
 	</div>
 	
 	<div id="footer">
-		<div class="copyright"><a href="about">О проекте</a>&nbsp;&nbsp;&nbsp;<a href="feedback">Обратная связь с администрацией проекта</a></div>
+		<div class="copyright"><a href="about">О проекте</a>&nbsp;&nbsp;&nbsp;<a href="feedback">Поддержка</a></div>
 		<div class="clear"></div>
 	</div>
 	

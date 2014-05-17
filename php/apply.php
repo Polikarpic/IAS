@@ -5,24 +5,24 @@ include_once("./db.php");
 session_start();  
 	
 	#заявки может отправлять только студент
-	if ($_SESSION["statusId"] != 0){ header("Location: ./../home?apply=fail&reason=not_perm"); exit(); }
+	if ($_SESSION["statusId"] != 0){ $_SESSION["um"] = 'e0'; header("Location: ./../home"); exit(); }
 	
 	$student = getFullName($_SESSION["userId"]);
-	$now_time = date("Y-m-d H:i:s",mktime(date('H') + 4,date('i'),date('s'),date('m'),date('d'),date('Y'))); 
+	$now_time = date("Y-m-d H:i:s",mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('Y')));
 	
 	#получаем данные о работе на которую подаётся заявка
 	$query = mysql_query("SELECT txtTopic, intTeacherId, txtStudentId FROM tblWork WHERE intWorkId='".safe_var($_GET["z"])."' LIMIT 1");
 	$topic = mysql_fetch_array($query);	
 	
 	#проверяем не выполняет ли студент уже какую-то работу
-	$query_already = mysql_query("SELECT * FROM tblWork WHERE txtStudentId LIKE '% ".$_SESSION["userId"]." %' LIMIT 1");
+	$query_already = mysql_query("SELECT * FROM tblWork WHERE txtStudentId LIKE '% ".$_SESSION["userId"]." %' and intWorkStatus='0' LIMIT 1");
 		
-	if (mysql_num_rows($query_already) != 0) { header("Location: ./../home?apply=fail&reason=already_running"); exit();}
+	if (mysql_num_rows($query_already) != 0) { $_SESSION["um"] = 'e2'; header("Location: ./../home"); exit();}
 	
 	#проверяем не подавал ли студент уже заявку на эту работу
 	$check = mysql_query("SELECT * FROM tblList_of_applications WHERE intStudentId='".$_SESSION["userId"]."' and intWorkId='".safe_var($_GET["z"])."' and boolStatus='0' LIMIT 1");
 	
-	if (mysql_num_rows($check) != 0){ header("location: ./../home?apply=fail&reason=already_submitted"); exit(); }  
+	if (mysql_num_rows($check) != 0){ $_SESSION["um"] = 'e1'; header("location: ./../home"); exit(); }  
 		
 		
 	#проверяем не подавал ли студент уже заявки на 5 других работ
@@ -46,7 +46,12 @@ session_start();
 	$alert = mysql_real_escape_string("Заявка от студента <a href='profile.php?z=".$_SESSION["userId"]."'>".$student."</a> на выполнение работы <b><a href='topic.php?z=".safe_var($_GET["z"])."'>".$topic["txtTopic"]."</a></b> <input id='submit' type='button' onclick=\"location.href='application.php?z=".$max["max"]."&n=".$nmax["nmax"]."'\" value='Подробнее' />");
 
 	#оповещение для преподавателя
-	mysql_query("INSERT INTO `tblNotification` (`intNotificationId`, `intRecipientId`, `txtMessage`, `boolCheck`, `datDate`,`intWorkId`) VALUES ('".$nmax["nmax"]."', '".$topic["intTeacherId"]."', '".$alert."', '0', '".$now_time."','".safe_var($_GET["z"])."')");
-	header("Location: ./../home?apply=ok"); exit();
+	mysql_query("INSERT INTO `tblNotification` (`intNotificationId`, `intRecipientId`, `txtMessage`, `boolCheck`, `datDate`,`intWorkId`, `intApplicationsId`) VALUES ('".$nmax["nmax"]."', '".$topic["intTeacherId"]."', '".$alert."', '0', '".$now_time."','".safe_var($_GET["z"])."', '".$max["max"]."')");
+	
+	#оповещение на почту для пользователя
+	notification_by_mail($topic["intTeacherId"], 'alert');
+	
+	$_SESSION["um"] = 'i2';
+	header("Location: ./../home"); exit();
 	
 ?>

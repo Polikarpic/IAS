@@ -2,7 +2,9 @@
  
 	include_once("php/db.php");
 	session_start(); 
-	if ($_SESSION["statusId"] != 3) header("Location: ./../home");
+	
+	#доступ 
+	if ($_SESSION["statusId"] != 2 && $_SESSION["statusId"] != 3){ $_SESSION["um"] = 'e0'; header("Location: ./../home"); exit(); }
 	
 	$title = "Добавить направление";
 	$current_menu1 = "current-menu-item current_page_item";
@@ -11,11 +13,13 @@
 	#получаем список кафедр
 	$query = mysql_query("SELECT * FROM tblDirection");    
 	 
+	#сообщения для пользователя
+	um();
 	
 ?>
 <div id="edge" class="button">
 			<form action="php/add_direction.php" method="post">
-			<label>Название направления: </label><input type="text" required="" name="direction" maxlength="256" placeholder="Название направления"/><br />
+			<label>Название направления: </label><input type="text" onkeyup="this.value=this.value.replace(/^\s*/,'');" required="" name="direction" maxlength="256" placeholder="Название направления"/><br />
 			<input id="submit" type="submit" name="send" value="Добавить" />
 			</form>
 </div>
@@ -32,7 +36,7 @@
 		{
 			if (mysql_num_rows($query) != 0) 
 			{
-				echo '<td><image src="./images/remove.png" title="Удалить" style="cursor: pointer;" onclick="location.href=\'php/remove_direction.php?z='.$data["intDirectionId"].'\'"></td>';
+				echo '<td><image src="./images/remove.png" title="Удалить" style="cursor: pointer;" onclick="if (confirm(\'Вы действительно хотите удалить направление?\')) location.href=\'php/remove_direction.php?z='.$data["intDirectionId"].'\'"></td>';
 				echo '<td>'.$data["txtDirectionName"].'</td>';		
 				echo '</tr>';		
 			}	

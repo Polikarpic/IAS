@@ -5,7 +5,7 @@ include_once("db.php");
 session_start();  
 
 	#доступ
-	if ($_SESSION["statusId"] == 0){ header("Location: ./../home"); exit(); }
+	if ($_SESSION["statusId"] == 0){ $_SESSION["um"] = 'e0'; header("Location: ./../home"); exit(); }
 	
 	$login = safe_var($_POST['login']);
 	$pass = safe_var($_POST['pass']);
@@ -34,10 +34,12 @@ session_start();
 			mysql_query("INSERT INTO `tblUsers` (`intUserId`, `txtSurname`, `txtName`, `txtSecondName`, `txtLogin`, `txtPass`, `intStatusId`, `intChairId`, `txtCourse`, `txtGroup`, `intDirectionId`) VALUES (NULL, '".$surname."', '".$name."', '".$secondname."', '".$login."', '".$pass."', '".$status."', NULL, '".$course."', '".$group."', '".$direction."')");
 		}
 		
-		header("Location: ./../home?add_user=ok");
+		$_SESSION["um"] = 'i13';
+		header("Location: ./../home");
 	}
 	else #пользователь с таким логином уже существует
 	{
-		header("Location: ./../add_user?status=l_busy");	
+		$_SESSION["um"] = 'e6';
+		header("Location: ./../add_user");	
 	}
 ?>

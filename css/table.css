@@ -1,6 +1,6 @@
 table.tftable {font-size:14px;color:#333333; width:100%; word-wrap: break-word;}
-table.tftable th {font-size:14px;background-color:#ded0b0;padding: 8px;text-align:left;}
-table.tftable td {font-size:14px;padding: 8px; }
+table.tftable th {font-size:14px;background-color:#ded0b0;padding: 8px;text-align:center;}
+table.tftable td {font-size:14px; padding: 8px; } 
 
 #trlink.tftable tr:hover {
 cursor: pointer;

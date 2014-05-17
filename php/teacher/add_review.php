@@ -5,8 +5,7 @@
 include_once("./../db.php");
 session_start();  
 
-
-
+	if ($_SESSION["statusId"] == 0){ $_SESSION["um"] = 'e0'; header("Location: ./../../home"); exit();}
 
 	#подробное описание, документ
 	if (!$_FILES['f']['error']){
@@ -14,7 +13,8 @@ session_start();
 	/* проверка размера файла */
 	if($_FILES["f"]["size"] > 1024*10*1024)
 	{
-		header("Location: ./../../current_topic?z=".$_GET["z"]."&add_re=fail&reason=size");
+		$_SESSION["um"] = 'e4';
+		header("Location: ./../../current_topic?z=".$_GET["z"]);
 		exit();
     }
 	
@@ -24,7 +24,8 @@ session_start();
 	/* проверка расширения */
 	if ($ext != 'pdf' && $ext != 'doc' && $ext != 'docx' && $ext != 'docm')
 	{
-		header("Location: ./../../current_topic?z=".$_GET["z"]."&add_re=fail&reason=extension");
+		$_SESSION["um"] = 'e17';
+		header("Location: ./../../current_topic?z=".$_GET["z"]);
 		exit();
 	}
 	
@@ -37,7 +38,7 @@ session_start();
 	
 	$temp = md5(uniqid(rand(),1).$max["max"]).".".$ext;
 	$uploadfile = $uploaddir.$temp;
-	$now_time = date("Y-m-d H:i:s",mktime(date('H') + 4,date('i'),date('s'),date('m'),date('d'),date('Y'))); 
+	$now_time = date("Y-m-d H:i:s",mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('Y')));
 	
 	move_uploaded_file($_FILES['f']['tmp_name'], $uploadfile);
 	$slink = "doc/".$temp;
@@ -59,15 +60,20 @@ session_start();
 	{	
 		#оповещение для студента о том, что преподаватель загрузил новую версию отзыва
 		mysql_query("INSERT INTO `tblNotification` (`intNotificationId`, `intRecipientId`, `txtMessage`, `boolCheck`, `datDate`) VALUES (NULL, '".$students[$i]."', '".$alert."', '0', '".$now_time."')");
+
+		#оповещение на почту для пользователя
+		notification_by_mail($students[$i], 'alert');
+	
 	}
 	
-	header("Location: ./../../current_topic?z=".$_GET["z"]."&add_re=ok");
+	$_SESSION["um"] = 'i12';
+	header("Location: ./../../current_topic?z=".$_GET["z"]);
 	
 	}	
 	else
 	{
-		
-		header("Location: ./../../current_topic?z=".$_GET["z"]."&add_re=fail&reason=not_file");
+		$_SESSION["um"] = 'e5';
+		header("Location: ./../../current_topic?z=".$_GET["z"]);
 		exit();
 	}
 

@@ -22,10 +22,7 @@ if ((isset($_SESSION["userId"]) && $_SESSION["userId"] != '') || (isset($_COOKIE
 }
 
 
-
-
-
- ?>
+?>
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -41,7 +38,7 @@ if ((isset($_SESSION["userId"]) && $_SESSION["userId"] != '') || (isset($_COOKIE
 
 <body>
 <form id="login" action="php/auth.php" method="POST">
-    <h1><img src="images/logo.png"/></h1>
+    <h1><img src="images/logo_beta.png"/></h1>
     <fieldset id="inputs">
         <input id="username" name="login" maxlength="30" placeholder="Логин" autofocus="" required="" value="<?php if (!empty($_SESSION["login"])) echo $_SESSION["login"]; ?>" type="text">   
         <input id="password" name="password" maxlength="30" placeholder="Пароль" required="" type="password">

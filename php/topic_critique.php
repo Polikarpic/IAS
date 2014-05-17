@@ -13,7 +13,7 @@ include_once("db.php");
 	<h1>Рецензия</h1>
 	<table class="tftable">
 		<tr>
-			<th >Дата</th>		
+			<th >Дата загрузки</th>		
 			<th >Загрузил</th>
 			<th >Название документа</th>					
 		</tr>		
@@ -21,7 +21,7 @@ include_once("db.php");
 				while($data = mysql_fetch_array($query_c))
 				{
 					echo '<tr>';
-					echo '<td>'.$data["datDate"].'</td>';
+					echo '<td>'.strftime('%d %B %G года',strtotime($data["datDate"])).'</td>';
 					echo '<td><a href="profile?z='.$data["intSenderId"].'">'.getFullName($data["intSenderId"]).'</a></td>';
 					echo '<td><a href="'.$data["txtLink"].'">'.$data["txtName"].'</td>';       
 					echo '</tr>';
@@ -37,7 +37,7 @@ include_once("db.php");
 				?>
 			</table>	
 <?php 
-if ($topic["intTeacherId"] == $_SESSION["userId"] || $reviewers["intTeacherId"] == $_SESSION["userId"])
+if ((($topic["intTeacherId"] == $_SESSION["userId"] || $reviewers["intTeacherId"] == $_SESSION["userId"] || ($_SESSION["statusId"] == 2 && $_SESSION["chairId"] == $topic["intChairId"])))  && $topic["intWorkStatus"] == 0)
 {	
 	echo '<div id="edge" class="button">';
 	echo '<h1>Загрузить рецензию</h1>';

@@ -5,7 +5,7 @@ include_once("db.php");
 session_start();  
 
 #доступ только у руководства кафедр
-if ($_SESSION["statusId"] != 3){ header("Location: ./../home"); exit(); }
+if ($_SESSION["statusId"] != 3){ $_SESSION["um"] = 'e0'; header("Location: ./../home"); exit(); }
 
 # настройки цветов
 $textColour = array( 0, 0, 0 );
@@ -19,6 +19,7 @@ $tableRowFillColour = array( 255, 255, 255 ); //ячейки фон
 $course = safe_var($_POST["course"]);
 $typeReport = safe_var($_POST["typeReport"]);
 $typeDoc = safe_var($_POST["type_doc"]);
+$direction = safe_var($_POST["direction"]);
 
 if ($typeReport == 0)
 	$query = mysql_query("SELECT intStudentId, txtTeacherMark, txtReviewerMark, txtСommissionMark, txtFinalMark FROM tblMark WHERE txtTeacherMark='Неудовлетворительно' or txtReviewerMark='Неудовлетворительно' or txtСommissionMark='Неудовлетворительно' or txtFinalMark='Неудовлетворительно'");
@@ -34,7 +35,7 @@ while($data = mysql_fetch_array($query))
 		$student = mysql_fetch_array($query_u);	
 		
 		#неподходящий курс смотрим следующего студента
-		if ($student["txtCourse"] != $course) continue;
+		if ($student["txtCourse"] != $course || $student["intDirectionId"] != $direction) continue;
  			
 		#получаем название направления
 		$query_direction = mysql_query("SELECT * FROM tblDirection WHERE intDirectionId='".$student["intDirectionId"]."' LIMIT 1");
@@ -258,8 +259,6 @@ $fp = fopen ($file, "w");
 fwrite($fp,$str);
 fclose($fp);
 header_autosave($file,'report.doc');
-
-
 }
   
 ?>

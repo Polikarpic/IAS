@@ -3,15 +3,15 @@ include_once("./db.php");
 session_start();  
 
 	#доступ только у преподавателя
-	if ($_SESSION["statusId"] != 1){ header("Location: ./../home"); exit(); }
+	if ($_SESSION["statusId"] != 1){ $_SESSION["um"] = 'e0'; header("Location: ./../home"); exit(); }
 	
-		$now_time = date("Y-m-d H:i:s",mktime(date('H') + 4,date('i'),date('s'),date('m'),date('d'),date('Y'))); 
+		$now_time = date("Y-m-d H:i:s",mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('Y')));
 		
 		# получаем информацию о заявке
 		$query = mysql_query("SELECT * FROM tblList_of_applications WHERE intApplicationsId='".safe_var($_GET["z"])."' LIMIT 1");
 		$appl = mysql_fetch_array($query);		
 		
-		if (empty($appl) || mysql_num_rows($query) == 0){ header("location: ./../alert?reject=fail"); exit(); }
+		if (empty($appl) || mysql_num_rows($query) == 0){ $_SESSION["um"] = 'e0'; header("location: ./../home"); exit(); }
 		
 		$teacher = getFullName($appl["intTeacherId"]);
 		$alert = mysql_real_escape_string("Преподаватель <a href='profile.php?z=".$appl["intTeacherId"]."'>".$teacher."</a> отклонил Вашу заявку на выполнение работы <b><a href='topic.php?z=".$appl["intWorkId"]."'>".$appl["txtTopic"]."</a></b>");
@@ -25,6 +25,10 @@ session_start();
 		#удаляем оповещение о заявке на работу для преподавателя
 		mysql_query("DELETE FROM `tblNotification` WHERE intNotificationId='".safe_var($_GET["n"])."'");
 		
-		header("Location: ./../home?reject=ok"); exit();
+		#оповещение на почту для пользователя
+		notification_by_mail($appl["intStudentId"], 'alert');
+		
+		$_SESSION["um"] = 'i1';
+		header("Location: ./../home"); exit();
 	
 ?>

@@ -44,14 +44,9 @@
 	{
 		$info[] = "Документ успешно загружен";
 	} 
-	if ($_GET["remove_ta"] == "ok")
-	{
-		$info[] = "Документ успешно удалён";
-	} 
 	
 	info_msg($info);
 	error_msg($error);
-		
 	  
 ?>
 <div id="edge">
@@ -65,13 +60,11 @@
 		
 		while($data = mysql_fetch_array($query))
 		{
-			if ($_SESSION["statusId"] == 0) $remove_button = '';
-			else $remove_button = ' <image src="./images/remove.png" title="Удалить документ" style="cursor: pointer;" onclick="location.href=\'php/remove_training_aids.php?z='.$data["intMaterialsId"].'\'" />';		
-			
 			echo '<tr>';
-			echo '<td>'.$data["datDate"].' '.$remove_button.'</td>';	
+			echo '<td>'.$data["datDate"].'</td>';	
 			echo '<td><a href="'.$data["txtLink"].'">'.$data["txtName"].'</a></td>';	
-			echo '</tr>';					
+			echo '</tr>';			
+			
 		}		
 		?>		
 		

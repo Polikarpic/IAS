@@ -6,7 +6,7 @@ session_start();
 
 
 	#доступ только у преподавателя
-	if ($_SESSION["statusId"] != 1){ header("Location: ./../home"); exit(); }
+	if ($_SESSION["statusId"] != 1){ header("Location: ./../home.php"); exit(); }
 	
 	
 if (!$_FILES['f']['error']){
@@ -29,7 +29,7 @@ if (!$_FILES['f']['error']){
 	$max = mysql_fetch_array($max);
 	$max["max"]++;    		
 
-	$temp = md5(uniqid(rand(),1).$max["max"]).".".$ext;
+	$temp = "ta".$max["max"].".".$ext;
 	$uploadfile = $uploaddir.$temp;
 	$now_time = date("Y-m-d H:i:s",mktime(date('H') + 4,date('i'),date('s'),date('m'),date('d'),date('Y'))); 	
 		
@@ -38,12 +38,12 @@ if (!$_FILES['f']['error']){
 	
 	#добавляем информацию о документе в БД
 	mysql_query("INSERT INTO `tblMaterials` (`intMaterialsId`, `txtName`, `txtLink`, `intSenderId`, `datDate`) VALUES ('".$max["max"]."', '".safe_var($_FILES["f"]["name"])."', '".safe_var($slink)."', '".$_SESSION["userId"]."', '".$now_time."')"); 
-	header("Location: ./../training_aids?ta=ok"); exit();
+	header("Location: ./../training_aids.php?ta=ok"); exit();
 } 
 else 
 {
 	// "Файл для загрузки не выбран"
-	header("Location: ./../training_aids?ta=fail&reason=not_file");
+	header("Location: ./../training_aids.php?ta=fail&reason=not_file");
 	exit();
 }
 
