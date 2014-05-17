@@ -1,0 +1,13 @@
+Options -Indexes
+
+AddDefaultCharset utf-8
+RewriteEngine on
+RewriteBase /
+RewriteRule ^index.php$ / [QSA,R]
+RewriteRule ^(([^/]+/)*[^.]+)$ /$1.php [L]
+
+
+<Files .htaccess>
+	order allow,deny
+	deny from all
+</Files>
