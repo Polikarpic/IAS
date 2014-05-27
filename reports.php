@@ -10,6 +10,7 @@
 		<option value="1">Список студентов, которые не выбрали работу</option>
 		<option value="2">Список студентов, получивших неудовлетворительную оценку</option>	
 	</select>  
+
    <input id="submit" type="button" onclick="location.href='#'" value="Получить" />	
 					
 						
